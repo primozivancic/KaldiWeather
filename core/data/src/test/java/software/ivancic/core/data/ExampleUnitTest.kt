@@ -1,4 +1,4 @@
-package software.ivancic.kaldiweather
+package software.ivancic.core.data
 
 import org.junit.Test
 

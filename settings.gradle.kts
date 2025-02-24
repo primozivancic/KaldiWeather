@@ -20,4 +20,11 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "KaldiWeather"
+
 include(":app")
+include(":core:data")
+include(":core:domain")
+include(":core:ui")
+include(":currentweather:data")
+include(":currentweather:domain")
+include(":currentweather:ui")

@@ -22,7 +22,7 @@ dependencies {
 //    api(libs.koin.android.base)
 
     api(libs.koin.annotations)
-    ksp(libs.koin.annotations.ksp)
+    implementation(libs.koin.annotations.ksp)
 }
 
 // Compile time check

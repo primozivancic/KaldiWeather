@@ -9,14 +9,14 @@ import software.ivancic.currentweather.domain.CurrentWeatherRepository
 class GetCurrentWeatherDataForLocationUseCase(
     private val currentWeatherRepository: CurrentWeatherRepository,
     coroutineDispatchers: CoroutineDispatchers,
-) : UseCase<LocationData, CurrentWeather?>(
+) : UseCase<LocationData, CurrentWeather>(
     coroutineDispatchers.io
 ) {
-    override suspend fun execute(parameters: LocationData): CurrentWeather? {
+    override suspend fun execute(parameters: LocationData): CurrentWeather {
         return currentWeatherRepository.getWeatherData(
             lat = parameters.latitude,
             lng = parameters.longitude,
-        )
+        ) ?: throw Throwable("No data available")
     }
 }
 

@@ -1,4 +1,4 @@
-package software.ivancic.kaldiweather.ui.theme
+package software.ivancic.core.ui.theme
 
 import android.app.Activity
 import android.os.Build

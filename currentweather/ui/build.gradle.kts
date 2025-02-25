@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.ksp)
+    alias(libs.plugins.kotlin.compose)
 }
 
 android {
@@ -37,15 +38,23 @@ dependencies {
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
-    implementation(libs.material)
+
+    implementation(platform(libs.androidx.compose.bom))
+    implementation(libs.bundles.compose)
+
+    implementation(platform(libs.koin.bom))
+    implementation(libs.bundles.koin)
+
+    api(libs.koin.annotations)
+    implementation(libs.koin.annotations.ksp)
 
     implementation(project(":core:ui"))
     implementation(project(":currentweather:domain"))
 
-    implementation(libs.koin.annotations)
-    ksp(libs.koin.annotations.ksp)
-
     testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
+}
+
+// Compile time check
+ksp {
+    arg("KOIN_CONFIG_CHECK", "true")
 }

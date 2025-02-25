@@ -38,16 +38,21 @@ dependencies {
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
-    implementation(libs.material)
 
     implementation(project(":core:data"))
     implementation(project(":currentweather:domain"))
 
     implementation(libs.timber)
 
-    ksp(libs.koin.annotations.ksp)
+    implementation(platform(libs.koin.bom))
+    implementation(libs.koin.android)
+
+    api(libs.koin.annotations)
+    implementation(libs.koin.annotations.ksp)
 
     testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
+}
+
+ksp {
+    arg("KOIN_CONFIG_CHECK", "true")
 }

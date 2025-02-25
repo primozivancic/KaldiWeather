@@ -1,10 +1,12 @@
 package software.ivancic.kaldiweather.ui.navigation
 
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import software.ivancic.currentweather.ui.screen.CurrentWeatherScreen
 
 @Composable
 fun MainNavigationScreen(
@@ -17,7 +19,10 @@ fun MainNavigationScreen(
         modifier = modifier,
     ) {
         composable<Destinations.CurrentWeather> {
-
+            CurrentWeatherScreen(
+                modifier = Modifier
+                    .fillMaxSize()
+            )
         }
     }
 }

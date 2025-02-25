@@ -1,4 +1,4 @@
-package software.ivancic.kaldiweather.ui.theme
+package software.ivancic.core.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

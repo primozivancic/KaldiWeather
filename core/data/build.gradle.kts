@@ -51,9 +51,13 @@ dependencies {
     api(libs.okhttpLoggingInterceptor)
     api(libs.kotlin.serialization.json)
 
-    ksp(libs.koin.annotations.ksp)
+    api(libs.koin.annotations)
+    implementation(libs.koin.annotations.ksp)
 
     testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
+}
+
+// Compile time check
+ksp {
+    arg("KOIN_CONFIG_CHECK", "true")
 }

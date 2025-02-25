@@ -6,7 +6,7 @@ import software.ivancic.currentweather.domain.CurrentWeatherRepository
 import software.ivancic.currentweather.domain.usecases.CurrentWeather
 import timber.log.Timber
 
-@Factory
+//@Factory
 class CurrentWeatherRepositoryImpl(
     private val api: ApiRepository,
 ) : CurrentWeatherRepository {

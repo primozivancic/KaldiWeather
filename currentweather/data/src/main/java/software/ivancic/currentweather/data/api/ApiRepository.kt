@@ -3,7 +3,7 @@ package software.ivancic.currentweather.data.api
 import org.koin.core.annotation.Factory
 import software.ivancic.currentweather.domain.usecases.CurrentWeather
 
-@Factory
+//@Factory
 class ApiRepository(
     private val weatherService: WeatherService,
 ) {

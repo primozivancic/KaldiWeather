@@ -38,4 +38,9 @@ val coreDataDi = module {
 
 enum class NamedInstancesNames(val instanceQualifierName: String) {
     WeatherApi("weatherApi"),
+    ;
+
+    override fun toString(): String {
+        return instanceQualifierName
+    }
 }

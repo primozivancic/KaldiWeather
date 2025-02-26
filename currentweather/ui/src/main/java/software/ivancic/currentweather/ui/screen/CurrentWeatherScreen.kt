@@ -62,6 +62,7 @@ fun CurrentWeatherScreenInternal(
             humidity = weatherState.humidity,
             tempUnit = weatherState.tempUnit,
             humidityUnit = weatherState.humidityUnit,
+            weatherDetails = weatherState.weatherDetails,
             modifier = Modifier
                 .fillMaxWidth()
         )

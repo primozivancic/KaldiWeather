@@ -9,6 +9,9 @@ import software.ivancic.currentweather.ui.CurrentWeatherViewModel.Action
 import software.ivancic.currentweather.ui.CurrentWeatherViewModel.Action.GetWeatherData
 import software.ivancic.currentweather.ui.CurrentWeatherViewModel.Effect
 import software.ivancic.currentweather.ui.CurrentWeatherViewModel.State
+import software.ivancic.currentweather.ui.screen.weathercodes.Codes
+import software.ivancic.currentweather.ui.screen.weathercodes.DayOrNight
+import software.ivancic.currentweather.ui.screen.weathercodes.Details
 
 //@KoinViewModel
 class CurrentWeatherViewModel(
@@ -33,6 +36,10 @@ class CurrentWeatherViewModel(
                                 humidity = data.humidity,
                                 tempUnit = data.tempUnit,
                                 humidityUnit = data.humidityUnit,
+                                weatherDetails = Codes.getDetailsFor(
+                                    code = data.weatherCode,
+                                    type = if (data.isDay) DayOrNight.DAY else DayOrNight.NIGHT,
+                                ),
                             )
                         }
                     }.onFailure {
@@ -59,5 +66,6 @@ class CurrentWeatherViewModel(
         val humidity: Int? = null,
         val tempUnit: String? = null,
         val humidityUnit: String? = null,
+        val weatherDetails: Details? = null,
     )
 }

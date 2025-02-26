@@ -24,6 +24,8 @@ dependencies {
     implementation(project(":geo:ui"))
     implementation(project(":currentweather:domain"))
 
+    implementation(libs.bundles.coil)
+
     testImplementation(libs.junit)
 }
 

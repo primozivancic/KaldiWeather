@@ -11,4 +11,5 @@ data class Current(
     @SerialName("relative_humidity_2m") var relativeHumidity2m: Int,
     @SerialName("apparent_temperature") var apparentTemperature: Double,
     @SerialName("weather_code") var weatherCode: Int,
+    @SerialName("is_day") var isDay: Int,
 )

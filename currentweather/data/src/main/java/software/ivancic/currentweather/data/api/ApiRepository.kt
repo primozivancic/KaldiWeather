@@ -20,6 +20,8 @@ class ApiRepository(
                 humidity = it.current.relativeHumidity2m,
                 tempUnit = it.currentUnits.temperature2m,
                 humidityUnit = it.currentUnits.relativeHumidity2m,
+                weatherCode = it.current.weatherCode,
+                isDay = it.current.isDay == 1,
             )
         }
     }

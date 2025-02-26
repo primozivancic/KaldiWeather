@@ -1,20 +1,19 @@
 package software.ivancic.currentweather.ui.screen
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Text
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import coil3.compose.AsyncImage
 import software.ivancic.core.ui.theme.KaldiWeatherTheme
-import software.ivancic.ui.R
+import software.ivancic.currentweather.ui.screen.weathercodes.DayOrNight
+import software.ivancic.currentweather.ui.screen.weathercodes.Details
 
 @Composable
 fun WeatherComponent(
@@ -26,39 +25,66 @@ fun WeatherComponent(
     humidity: Int?,
     tempUnit: String?,
     humidityUnit: String?,
+    weatherDetails: Details?,
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier,
     ) {
-        Image(
-            painter = painterResource(R.drawable.ic_launcher_foreground), // todo replace with the actual weather image
-            contentDescription = stringResource(R.string.weather_representation_image),
-        )
+        weatherDetails?.let {
+            AsyncImage(
+                model = weatherDetails.icon,
+                contentDescription = weatherDetails.description,
+                modifier = Modifier
+                    .size(120.dp)
+            )
+        }
 
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier
-                .padding(
-                    horizontal = 16.dp,
-                )
-        ) { // todo add all the different data
-            Row(
-                horizontalArrangement = Arrangement.SpaceBetween,
-            ) {
-                Text(text = currentTemp.toString() + tempUnit)
-                Text(text = feelsLikeTemp.toString() + tempUnit)
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(2),
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+            userScrollEnabled = true,
+        ) {
+            if (currentTemp != null && tempUnit != null) {
+                item {
+                    SingleDataElement(
+                        title = "Current temperature",
+                        data = currentTemp.toString() + tempUnit,
+                    )
+                }
             }
-            Row(
-                horizontalArrangement = Arrangement.SpaceBetween,
-            ) {
-                Text(text = minTemp.toString() + tempUnit)
-                Text(text = maxTemp.toString() + tempUnit)
+            if (feelsLikeTemp != null && tempUnit != null) {
+                item {
+                    SingleDataElement(
+                        title = "Feels like",
+                        data = feelsLikeTemp.toString() + tempUnit,
+                    )
+                }
             }
-            Row(
-                horizontalArrangement = Arrangement.SpaceBetween,
-            ) {
-                Text(text = humidity.toString() + humidityUnit)
+            if (minTemp != null && tempUnit != null) {
+                item {
+                    SingleDataElement(
+                        title = "Min temperature",
+                        data = minTemp.toString() + tempUnit,
+                    )
+                }
+            }
+            if (maxTemp != null && tempUnit != null) {
+                item {
+                    SingleDataElement(
+                        title = "Max temperature",
+                        data = maxTemp.toString() + tempUnit,
+                    )
+                }
+            }
+            if (humidity != null && humidityUnit != null) {
+                item {
+                    SingleDataElement(
+                        title = "Humidity",
+                        data = humidity.toString() + humidityUnit,
+                    )
+                }
             }
         }
     }
@@ -76,6 +102,11 @@ private fun WeatherComponentPreview() {
             humidity = 10,
             tempUnit = "°C",
             humidityUnit = "%",
+            weatherDetails = Details(
+                type = DayOrNight.DAY,
+                description = "Sunny",
+                icon = "http://openweathermap.org/img/wn/01d@2x.png",
+            ),
         )
     }
 }

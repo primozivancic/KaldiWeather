@@ -33,4 +33,6 @@ data class CurrentWeather(
     val humidity: Int,
     val tempUnit: String,
     val humidityUnit: String,
+    val weatherCode: Int,
+    val isDay: Boolean,
 )

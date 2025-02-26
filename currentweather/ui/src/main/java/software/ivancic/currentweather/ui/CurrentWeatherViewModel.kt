@@ -24,7 +24,7 @@ class CurrentWeatherViewModel(
                 viewModelScope.launch {
                     updateState { it.copy(isLoading = true) }
                     getCurrentWeatherDataForLocation(
-                        LocationData(action.lat, action.lng)
+                        LocationData(action.latitude, action.longitude)
                     ).onSuccess { data ->
                         updateState {
                             it.copy(
@@ -52,10 +52,11 @@ class CurrentWeatherViewModel(
     }
 
     sealed interface Action {
-        data class GetWeatherData(val lat: Double, val lng: Double) : Action
+        data class GetWeatherData(val latitude: Double, val longitude: Double) : Action
     }
 
     sealed interface Effect
+
     data class State(
         val isLoading: Boolean = false,
 

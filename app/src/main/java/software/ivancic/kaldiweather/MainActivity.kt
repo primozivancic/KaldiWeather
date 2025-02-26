@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
+import org.koin.compose.KoinContext
 import software.ivancic.core.ui.theme.KaldiWeatherTheme
 import software.ivancic.kaldiweather.ui.navigation.MainNavigationScreen
 
@@ -16,12 +17,14 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            KaldiWeatherTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    MainNavigationScreen(
-                        modifier = Modifier
-                            .padding(innerPadding)
-                    )
+            KoinContext {
+                KaldiWeatherTheme {
+                    Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                        MainNavigationScreen(
+                            modifier = Modifier
+                                .padding(innerPadding)
+                        )
+                    }
                 }
             }
         }

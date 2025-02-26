@@ -3,6 +3,7 @@ package software.ivancic.geo.data
 import androidx.room.Room
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import kotlinx.serialization.json.Json
+import okhttp3.Interceptor
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -10,6 +11,7 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import retrofit2.Retrofit
+import software.ivancic.geo.data.api.GeoReverseService
 import software.ivancic.geo.data.api.GeoService
 import software.ivancic.geo.data.cache.CacheRepository
 import software.ivancic.geo.data.cache.db.PlacesDao
@@ -27,8 +29,6 @@ val geoDataDi = module {
             .addInterceptor(loggingInterceptor)
             .build()
 
-        // let's say this is the default endpoint, so we can include it
-        // in a core module
         Retrofit.Builder()
             .baseUrl(BuildConfig.GEO_API_URL)
             .client(client)
@@ -43,7 +43,7 @@ val geoDataDi = module {
     }
 
     factory<GeoRepository> {
-        GeoRepositoryImpl(get(), get())
+        GeoRepositoryImpl(get(), get(), get())
     }
 
     single<PlacesDb> {
@@ -61,10 +61,40 @@ val geoDataDi = module {
     single<CacheRepository> {
         CacheRepository(get())
     }
+
+    single<Retrofit>(named(NamedInstancesNames.GeoReverseApi)) {
+        val json = Json { ignoreUnknownKeys = true }
+        val contentType = "application/json".toMediaType()
+        val loggingInterceptor = HttpLoggingInterceptor().also {
+            it.level = HttpLoggingInterceptor.Level.BODY
+        }
+        val userAgentInterceptor = Interceptor { chain ->
+            val request = chain.request()
+            val reqBuilder = request.newBuilder()
+                .header("User-Agent", "Android / Learning project - weather app")
+            chain.proceed(reqBuilder.build())
+        }
+        val client = OkHttpClient.Builder()
+            .addInterceptor(loggingInterceptor)
+            .addInterceptor(userAgentInterceptor)
+            .build()
+
+        Retrofit.Builder()
+            .baseUrl(BuildConfig.GEO_REVERSE_API_URL)
+            .client(client)
+            .addConverterFactory(json.asConverterFactory(contentType))
+            .build()
+    }
+
+    single<GeoReverseService> {
+        get<Retrofit>(named(NamedInstancesNames.GeoReverseApi))
+            .create(GeoReverseService::class.java)
+    }
 }
 
 enum class NamedInstancesNames(private val instanceQualifierName: String) {
     GeoApi("geoApi"),
+    GeoReverseApi("geoReverseApi"),
     ;
 
     override fun toString(): String {

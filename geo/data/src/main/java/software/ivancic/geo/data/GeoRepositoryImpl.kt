@@ -1,8 +1,6 @@
-@file:OptIn(ExperimentalCoroutinesApi::class)
-
 package software.ivancic.geo.data
 
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import software.ivancic.geo.data.api.GeoReverseService
 import software.ivancic.geo.data.api.GeoService
 import software.ivancic.geo.data.cache.CacheRepository
 import software.ivancic.geo.domain.GeoRepository
@@ -10,6 +8,7 @@ import software.ivancic.geo.domain.usecases.Place
 
 class GeoRepositoryImpl(
     private val geoService: GeoService,
+    private val geoReverseService: GeoReverseService,
     private val cacheRepository: CacheRepository,
 ) : GeoRepository {
     override suspend fun getPlacesForQuery(query: String): List<Place> {
@@ -33,5 +32,11 @@ class GeoRepositoryImpl(
             latitude = entity.latitude,
             longitude = entity.longitude,
         )
+    }
+
+    override suspend fun getPlaceNameFromLocation(latitude: Double, longitude: Double): String {
+        return with(geoReverseService.getLocationFromLatLng(latitude, longitude).address) {
+            city ?: town ?: village ?: road ?: "Unknown"
+        }
     }
 }

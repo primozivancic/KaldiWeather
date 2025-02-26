@@ -13,6 +13,7 @@ import androidx.compose.ui.unit.dp
 import org.koin.androidx.compose.koinViewModel
 import software.ivancic.core.ui.theme.KaldiWeatherTheme
 import software.ivancic.currentweather.ui.CurrentWeatherViewModel
+import software.ivancic.currentweather.ui.screen.components.WeatherComponent
 import software.ivancic.geo.ui.components.AutoCompleteTextView
 import software.ivancic.ui.R
 

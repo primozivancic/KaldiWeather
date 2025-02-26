@@ -7,17 +7,15 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import software.ivancic.core.ui.BaseViewModel
+import software.ivancic.geo.domain.usecases.FindPlaceNameFromLocation
 import software.ivancic.geo.domain.usecases.GetLatestPlacesUseCase
+import software.ivancic.geo.domain.usecases.Location
 import software.ivancic.geo.domain.usecases.Place
 import software.ivancic.geo.domain.usecases.Query
 import software.ivancic.geo.domain.usecases.SavePlaceToHistoryUseCase
 import software.ivancic.geo.domain.usecases.SearchForMatchingPlacesUseCase
 import software.ivancic.geo.ui.GeoViewModel.Action
-import software.ivancic.geo.ui.GeoViewModel.Action.OnClearClick
-import software.ivancic.geo.ui.GeoViewModel.Action.OnPredictionSelected
-import software.ivancic.geo.ui.GeoViewModel.Action.OnSearchFieldFocusReceived
-import software.ivancic.geo.ui.GeoViewModel.Action.SearchForMatchingPlaces
-import software.ivancic.geo.ui.GeoViewModel.Action.UpdateSearchQuery
+import software.ivancic.geo.ui.GeoViewModel.Action.*
 import software.ivancic.geo.ui.GeoViewModel.Effect
 import software.ivancic.geo.ui.GeoViewModel.State
 
@@ -25,6 +23,7 @@ class GeoViewModel(
     private val searchForMatchingPlaces: SearchForMatchingPlacesUseCase,
     private val savePlaceToHistory: SavePlaceToHistoryUseCase,
     private val getLatestPlaces: GetLatestPlacesUseCase,
+    private val findPlaceNameFromLocation: FindPlaceNameFromLocation,
 ) : BaseViewModel<Action, Effect, State>(State()) {
 
     private var executeSearchAfterDelayJob: Job? = null
@@ -83,6 +82,28 @@ class GeoViewModel(
                     )
                 }
             }
+
+            is OnLocationPermissionResult -> {
+                if (action.granted) {
+                    emitEffect(Effect.OnLocationPermissionAccepted)
+                } else {
+                    emitEffect(Effect.OnLocationPermissionDenied)
+                }
+            }
+
+            OnViewCreated -> {
+                emitEffect(Effect.RequestLocationPermission)
+            }
+
+            is GetCityAndWeatherDataFromLocation -> {
+                findPlaceNameFromLocation(Location(action.latitude, action.longitude))
+                    .onSuccess { city ->
+                        updateState { it.copy(searchQuery = TextFieldValue(city, TextRange(city.length))) }
+                    }
+                    .onFailure {
+                        // do nothing, fail silently
+                    }
+            }
         }
     }
 
@@ -96,14 +117,23 @@ class GeoViewModel(
     }
 
     sealed interface Action {
+        data object OnViewCreated : Action
         data object OnSearchFieldFocusReceived : Action
         data object OnClearClick : Action
         data class SearchForMatchingPlaces(val query: TextFieldValue) : Action
         data class UpdateSearchQuery(val query: TextFieldValue) : Action
         data class OnPredictionSelected(val place: Place) : Action
+        data class OnLocationPermissionResult(val granted: Boolean) : Action
+        data class GetCityAndWeatherDataFromLocation(val latitude: Double, val longitude: Double) :
+            Action
     }
 
-    sealed interface Effect
+    sealed interface Effect {
+        data object RequestLocationPermission : Effect
+        data object OnLocationPermissionDenied : Effect
+        data object OnLocationPermissionAccepted : Effect
+    }
+
     data class State(
         val searchQuery: TextFieldValue = TextFieldValue(""),
         val showPredictions: Boolean = false,

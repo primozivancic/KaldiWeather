@@ -6,4 +6,5 @@ interface GeoRepository {
     suspend fun getPlacesForQuery(query: String): List<Place>
     suspend fun savePlaceToHistory(place: Place)
     suspend fun getLatestPlaces(): List<Place>
+    suspend fun getPlaceNameFromLocation(latitude: Double, longitude: Double): String
 }

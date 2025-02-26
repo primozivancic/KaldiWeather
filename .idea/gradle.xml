@@ -31,6 +31,10 @@
             <option value="$PROJECT_DIR$/currentweather/data" />
             <option value="$PROJECT_DIR$/currentweather/domain" />
             <option value="$PROJECT_DIR$/currentweather/ui" />
+            <option value="$PROJECT_DIR$/geo" />
+            <option value="$PROJECT_DIR$/geo/data" />
+            <option value="$PROJECT_DIR$/geo/domain" />
+            <option value="$PROJECT_DIR$/geo/ui" />
           </set>
         </option>
         <option name="resolveExternalAnnotations" value="false" />

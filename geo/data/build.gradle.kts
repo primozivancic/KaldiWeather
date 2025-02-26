@@ -8,6 +8,7 @@ android {
     defaultConfig {
         // let's say this is the api used all over the app, so we keep it in :core:data module
         buildConfigField("String", "GEO_API_URL", "\"https://geocoding-api.open-meteo.com/\"")
+        buildConfigField("String", "GEO_REVERSE_API_URL", "\"https://nominatim.openstreetmap.org/\"")
     }
 
     buildFeatures {

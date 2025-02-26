@@ -1,4 +1,4 @@
-package software.ivancic.currentweather.ui.screen
+package software.ivancic.currentweather.ui.screen.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

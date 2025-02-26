@@ -3,11 +3,11 @@ plugins {
 }
 
 android {
-    namespace = "software.ivancic.core.data"
+    namespace = "software.ivancic.geo.data"
 
     defaultConfig {
         // let's say this is the api used all over the app, so we keep it in :core:data module
-        buildConfigField("String", "WEATHER_API_URL", "\"https://api.open-meteo.com/\"")
+        buildConfigField("String", "GEO_API_URL", "\"https://geocoding-api.open-meteo.com/\"")
     }
 
     buildFeatures {
@@ -20,20 +20,16 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
 
-    implementation(project(":core:domain"))
-    api(libs.retrofit)
-    api(libs.retrofit.json.converter)
-    api(libs.okhttp)
-    api(libs.okhttpLoggingInterceptor)
-    api(libs.kotlin.serialization.json)
+    api(project(":core:data"))
+    implementation(project(":geo:domain"))
+
+    implementation(libs.timber)
+
+    implementation(platform(libs.koin.bom))
+    implementation(libs.koin.android)
 
     api(libs.koin.annotations)
     implementation(libs.koin.annotations.ksp)
 
     testImplementation(libs.junit)
-}
-
-// Compile time check
-ksp {
-    arg("KOIN_CONFIG_CHECK", "true")
 }

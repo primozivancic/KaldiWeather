@@ -21,6 +21,7 @@ dependencies {
     implementation(libs.koin.annotations.ksp)
 
     implementation(project(":core:ui"))
+    implementation(project(":geo:ui"))
     implementation(project(":currentweather:domain"))
 
     testImplementation(libs.junit)

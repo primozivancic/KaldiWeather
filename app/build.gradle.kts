@@ -62,6 +62,10 @@ dependencies {
     implementation(project(":currentweather:domain"))
     implementation(project(":currentweather:ui"))
 
+    implementation(project(":geo:data"))
+    implementation(project(":geo:domain"))
+    implementation(project(":geo:ui"))
+
     implementation(libs.timber)
 
     testImplementation(libs.koin.test)

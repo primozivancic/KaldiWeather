@@ -13,9 +13,7 @@ import software.ivancic.currentweather.ui.CurrentWeatherViewModel.State
 //@KoinViewModel
 class CurrentWeatherViewModel(
     private val getCurrentWeatherDataForLocation: GetCurrentWeatherDataForLocationUseCase,
-) : BaseViewModel<Action, Effect, State>(
-    State(false)
-) {
+) : BaseViewModel<Action, Effect, State>(State()) {
 
     override suspend fun handleAction(action: Action) {
         when (action) {
@@ -23,7 +21,7 @@ class CurrentWeatherViewModel(
                 viewModelScope.launch {
                     updateState { it.copy(isLoading = true) }
                     getCurrentWeatherDataForLocation(
-                        LocationData(action.place.lat, action.place.lng)
+                        LocationData(action.lat, action.lng)
                     ).onSuccess { data ->
                         updateState {
                             it.copy(
@@ -47,12 +45,12 @@ class CurrentWeatherViewModel(
     }
 
     sealed interface Action {
-        data class GetWeatherData(val place: Place) : Action
+        data class GetWeatherData(val lat: Double, val lng: Double) : Action
     }
 
     sealed interface Effect
     data class State(
-        val isLoading: Boolean,
+        val isLoading: Boolean = false,
 
         val currentTemp: Double? = null,
         val feelsLikeTemp: Double? = null,

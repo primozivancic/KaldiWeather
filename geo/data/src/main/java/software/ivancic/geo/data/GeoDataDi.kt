@@ -1,22 +1,18 @@
-package software.ivancic.core.data
+package software.ivancic.geo.data
 
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
-import org.koin.core.annotation.ComponentScan
-import org.koin.core.annotation.Module
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import retrofit2.Retrofit
+import software.ivancic.geo.data.api.GeoService
+import software.ivancic.geo.domain.GeoRepository
 
-@Module
-@ComponentScan("software.ivancic.core.data")
-class CoreDataDI
-
-val coreDataDi = module {
-    single<Retrofit>(named(NamedInstancesNames.WeatherApi)) {
+val geoDataDi = module {
+    single<Retrofit>(named(NamedInstancesNames.GeoApi)) {
         val json = Json { ignoreUnknownKeys = true }
         val contentType = "application/json".toMediaType()
         val loggingInterceptor = HttpLoggingInterceptor().also {
@@ -29,15 +25,25 @@ val coreDataDi = module {
         // let's say this is the default endpoint, so we can include it
         // in a core module
         Retrofit.Builder()
-            .baseUrl(BuildConfig.WEATHER_API_URL)
+            .baseUrl(BuildConfig.GEO_API_URL)
             .client(client)
             .addConverterFactory(json.asConverterFactory(contentType))
             .build()
     }
+
+    factory<GeoService> {
+        get<Retrofit>(named(NamedInstancesNames.GeoApi))
+            .create(GeoService::class.java)
+
+    }
+
+    factory<GeoRepository> {
+        GeoRepositoryImpl(get())
+    }
 }
 
 enum class NamedInstancesNames(private val instanceQualifierName: String) {
-    WeatherApi("weatherApi"),
+    GeoApi("geoApi"),
     ;
 
     override fun toString(): String {

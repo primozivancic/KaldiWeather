@@ -2,33 +2,36 @@ package software.ivancic.currentweather.ui.screen
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import org.koin.androidx.compose.koinViewModel
 import software.ivancic.core.ui.theme.KaldiWeatherTheme
 import software.ivancic.currentweather.ui.CurrentWeatherViewModel
-import software.ivancic.currentweather.ui.Place
+import software.ivancic.geo.ui.components.AutoCompleteTextView
+import software.ivancic.ui.R
 
 @Composable
 fun CurrentWeatherScreen(
-    viewModel: CurrentWeatherViewModel = koinViewModel(),
+    currentWeatherViewModel: CurrentWeatherViewModel = koinViewModel(),
     modifier: Modifier = Modifier,
 ) {
-    val state by viewModel.state.collectAsState()
+    val weatherState by currentWeatherViewModel.state.collectAsState()
 
     CurrentWeatherScreenInternal(
-        state = state,
-        getWeatherForPlace = { place ->
-            viewModel.submitAction(CurrentWeatherViewModel.Action.GetWeatherData(place))
+        weatherState = weatherState,
+        onPredictionSelected = { lat, lng ->
+            currentWeatherViewModel.submitAction(
+                CurrentWeatherViewModel.Action.GetWeatherData(
+                    lat,
+                    lng
+                )
+            )
         },
         modifier = modifier,
     )
@@ -36,41 +39,31 @@ fun CurrentWeatherScreen(
 
 @Composable
 fun CurrentWeatherScreenInternal(
-    state: CurrentWeatherViewModel.State,
-    getWeatherForPlace: (Place) -> Unit,
+    weatherState: CurrentWeatherViewModel.State,
+    onPredictionSelected: (Double, Double) -> Unit,
     modifier: Modifier,
 ) {
     Column(
-        modifier = modifier,
+        modifier = modifier
+            .padding(horizontal = 16.dp),
     ) {
-        var query by remember { mutableStateOf("") }
-        TextField(
-            value = query,
-            onValueChange = { query = it },
-            label = { Text("City name") }
-        )
-
-        WeatherComponent(
-            currentTemp = state.currentTemp,
-            feelsLikeTemp = state.feelsLikeTemp,
-            minTemp = state.minTemp,
-            maxTemp = state.maxTemp,
-            humidity = state.humidity,
-            tempUnit = state.tempUnit,
-            humidityUnit = state.humidityUnit,
+        AutoCompleteTextView(
+            label = stringResource(R.string.enter_location),
+            onPlaceSelected = onPredictionSelected,
             modifier = Modifier
                 .fillMaxWidth()
         )
-    }
 
-    // todo test data - remove!
-    LaunchedEffect(null) {
-        getWeatherForPlace(
-            Place(
-                lat = 46.0511,
-                lng = 14.5051,
-                name = "some place",
-            )
+        WeatherComponent(
+            currentTemp = weatherState.currentTemp,
+            feelsLikeTemp = weatherState.feelsLikeTemp,
+            minTemp = weatherState.minTemp,
+            maxTemp = weatherState.maxTemp,
+            humidity = weatherState.humidity,
+            tempUnit = weatherState.tempUnit,
+            humidityUnit = weatherState.humidityUnit,
+            modifier = Modifier
+                .fillMaxWidth()
         )
     }
 }
@@ -80,7 +73,7 @@ fun CurrentWeatherScreenInternal(
 private fun CurrentWeatherScreenInternalPreview() {
     KaldiWeatherTheme {
         CurrentWeatherScreenInternal(
-            state = CurrentWeatherViewModel.State(
+            weatherState = CurrentWeatherViewModel.State(
                 isLoading = false,
                 currentTemp = 10.0,
                 feelsLikeTemp = 10.0,
@@ -90,7 +83,7 @@ private fun CurrentWeatherScreenInternalPreview() {
                 tempUnit = "°C",
                 humidityUnit = "%",
             ),
-            getWeatherForPlace = {},
+            onPredictionSelected = { _, _ -> },
             modifier = Modifier
         )
     }

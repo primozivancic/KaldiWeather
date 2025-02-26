@@ -20,7 +20,7 @@ fun MainNavigationScreen(
     ) {
         composable<Destinations.CurrentWeather> {
             CurrentWeatherScreen(
-                modifier = Modifier
+                modifier = modifier
                     .fillMaxSize()
             )
         }

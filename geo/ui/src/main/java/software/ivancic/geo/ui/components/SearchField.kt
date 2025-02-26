@@ -33,14 +33,11 @@ fun SearchField(
     onSearchActionClicked: () -> Unit = {},
     onClearClick: () -> Unit = {},
     onQueryChanged: (TextFieldValue) -> Unit,
+    onFocusReceived: () -> Unit = {},
 ) {
     var showClearButton by remember { mutableStateOf(query.text.isNotEmpty()) }
 
     OutlinedTextField(
-        modifier = modifier
-            .onFocusChanged { focusState ->
-                showClearButton = (focusState.isFocused)
-            },
         value = query,
         onValueChange = onQueryChanged,
         label = { Text(text = label) },
@@ -61,7 +58,14 @@ fun SearchField(
         keyboardOptions = KeyboardOptions(
             imeAction = ImeAction.Search,
             keyboardType = KeyboardType.Text
-        )
+        ),
+        modifier = modifier
+            .onFocusChanged { focusState ->
+                showClearButton = focusState.isFocused
+                if (focusState.isFocused) {
+                    onFocusReceived()
+                }
+            },
     )
 }
 

@@ -5,6 +5,6 @@ import org.koin.dsl.module
 
 val geoUiDi = module {
     viewModel {
-        GeoViewModel(get())
+        GeoViewModel(get(), get(), get())
     }
 }

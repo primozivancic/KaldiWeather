@@ -26,10 +26,14 @@ dependencies {
     implementation(libs.timber)
 
     implementation(platform(libs.koin.bom))
+    implementation(libs.koin.android.base)
     implementation(libs.koin.android)
 
     api(libs.koin.annotations)
     implementation(libs.koin.annotations.ksp)
+
+    ksp(libs.room.compiler)
+    implementation(libs.bundles.room)
 
     testImplementation(libs.junit)
 }

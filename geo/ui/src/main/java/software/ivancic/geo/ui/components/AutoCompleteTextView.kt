@@ -3,12 +3,8 @@ package software.ivancic.geo.ui.components
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.TextFieldValue
@@ -30,6 +26,7 @@ fun AutoCompleteTextView(
         label = label,
         query = state.searchQuery,
         predictions = state.places,
+        showPredictions = state.showPredictions,
         onQueryChanged = {
             geoViewModel.submitAction(GeoViewModel.Action.UpdateSearchQuery(it))
         },
@@ -41,7 +38,10 @@ fun AutoCompleteTextView(
             onPlaceSelected(place.latitude, place.longitude)
         },
         onClearClick = {
-            geoViewModel.submitAction(GeoViewModel.Action.ClearSearchQuery)
+            geoViewModel.submitAction(GeoViewModel.Action.OnClearClick)
+        },
+        onFocusReceived = {
+            geoViewModel.submitAction(GeoViewModel.Action.OnSearchFieldFocusReceived)
         },
         modifier = modifier,
     )
@@ -52,19 +52,16 @@ private fun AutoCompleteTextViewInternal(
     label: String,
     query: TextFieldValue,
     predictions: List<Place>,
+    showPredictions: Boolean,
     onQueryChanged: (TextFieldValue) -> Unit,
     onSearchActionClicked: () -> Unit,
     onPredictionSelected: (Place) -> Unit,
     onClearClick: () -> Unit,
+    onFocusReceived: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Box(modifier = modifier) {
         val focusManager = LocalFocusManager.current
-        var showPredictions by remember { mutableStateOf(false) }
-
-        LaunchedEffect(predictions) {
-            showPredictions = predictions.isNotEmpty()
-        }
 
         SearchField(
             label = label,
@@ -78,15 +75,15 @@ private fun AutoCompleteTextViewInternal(
                 onClearClick()
                 focusManager.clearFocus(true)
             },
+            onFocusReceived = onFocusReceived,
             modifier = Modifier
                 .fillMaxWidth()
         )
-        if (predictions.isNotEmpty() && showPredictions) {
+        if (showPredictions) {
             Predictions(
                 predictions = predictions,
                 onPredictionSelected = {
                     onPredictionSelected(it)
-                    showPredictions = false
                 },
                 modifier = Modifier
                     .fillMaxWidth()
